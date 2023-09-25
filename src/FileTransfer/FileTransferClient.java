@@ -38,11 +38,11 @@ public class FileTransferClient extends Socket {
             //initial data input stream of client
             dis = new DataInputStream(this.getInputStream());
             //read msg length
-            int len = dis.readInt();
+//            int len = dis.readInt();
             //read msg identifier
             int specifier = dis.readInt();
             switch (specifier){
-                //receive B from server
+                //receive msg from server
                 case stringIdentifier:
                     String str = "";
                     String temp;
@@ -67,12 +67,11 @@ public class FileTransferClient extends Socket {
     /**
      * send string with identifier to server
      * @param str   the message need to be sent
-     * @param identifier    the message identifier
      */
-    public void sendStr(String str, int identifier){
+    public void sendStr(String str){
         try {
             dos.writeInt(str.length());
-            dos.writeInt(identifier);
+            dos.writeInt(stringIdentifier);
             dos.writeUTF(str);
             dos.flush();
         } catch (IOException e) {
@@ -101,7 +100,7 @@ public class FileTransferClient extends Socket {
                 while (!exit) {
                     String temp = getInputStr();
                     if(!exit) {
-                        sendStr(temp, stringIdentifier);
+                        sendStr(temp);
                     }
                 }
             } catch (Exception e) {
