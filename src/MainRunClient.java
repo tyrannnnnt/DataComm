@@ -28,4 +28,7 @@ public class MainRunClient {
         String str = in.nextLine();
         return str;
     }
+
+
+
 }

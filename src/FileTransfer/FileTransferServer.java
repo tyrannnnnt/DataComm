@@ -5,6 +5,7 @@ import javafx.concurrent.Task;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Scanner;
 
 public class FileTransferServer extends ServerSocket{
     private static final int SERVER_PORT = 8899; // port number
@@ -45,11 +46,27 @@ public class FileTransferServer extends ServerSocket{
 
         @Override
         public void run() {
-            try {
-                receiveMsg(this.socket);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            new Thread(() -> {
+                while (true) {
+                    try {
+                        receiveMsg(this.socket);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+
+            }).start();
+
+            new Thread(() -> {
+                while (true) {
+                    try {
+                        sendStr(getInputStr(), stringIdentifier);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+
+            }).start();
         }
 
         /**
@@ -90,13 +107,14 @@ public class FileTransferServer extends ServerSocket{
             }
         }
 
+
         /**
          * send string to client
          *
          * @param str        message
          * @param identifier identifier number
          */
-        private void sendStr(String str, int identifier) {
+        public void sendStr(String str, int identifier) {
             try {
                 dos = new DataOutputStream(socket.getOutputStream());
                 dos.writeInt(str.length());
@@ -106,6 +124,17 @@ public class FileTransferServer extends ServerSocket{
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        }
+
+        private String getInputStr() {
+            System.out.println("Please input the msg to send: ");
+            Scanner in = new Scanner(System.in);
+            String str = in.nextLine();
+            if (!str.equals("exit")) {
+                return str;
+            }
+            System.exit(0);
+            return "";
         }
     }
 }
