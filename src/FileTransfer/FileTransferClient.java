@@ -111,7 +111,7 @@ public class FileTransferClient extends Socket {
 
     }
 
-    private String getInputStr(){
+    private String getInputStr() throws IOException {
         System.out.println("Please input the msg to send: ");
         Scanner in = new Scanner(System.in);
         String str = in.nextLine();
