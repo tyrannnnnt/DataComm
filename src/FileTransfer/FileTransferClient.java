@@ -38,7 +38,7 @@ public class FileTransferClient extends Socket {
             //initial data input stream of client
             dis = new DataInputStream(this.getInputStream());
             //read msg length
-//            int len = dis.readInt();
+            int len = dis.readInt();
             //read msg identifier
             int specifier = dis.readInt();
             switch (specifier){

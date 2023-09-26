@@ -80,7 +80,7 @@ public class FileTransferServer extends ServerSocket{
                 dis = new DataInputStream(client.getInputStream());
                 while (true) {
                     //read msg length
-//                    int len = dis.readInt();
+                    int len = dis.readInt();
                     //read msg identifier
                     int specifier = dis.readInt();
                     switch (specifier) {
