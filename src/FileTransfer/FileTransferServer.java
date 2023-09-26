@@ -78,30 +78,22 @@ public class FileTransferServer extends ServerSocket{
             try {
                 //initial data input stream of client
                 dis = new DataInputStream(client.getInputStream());
-                while (true) {
-                    //read msg length
-                    int len = dis.readInt();
-                    //read msg identifier
-                    int specifier = dis.readInt();
-                    switch (specifier) {
-                        //receive string from clint
-                        case stringIdentifier:
-                            String str = "";
-                            String temp;
-                            while (!(temp = dis.readUTF()).equalsIgnoreCase("")) {
-                                str += temp;
-                                if (temp.isEmpty()) {
-                                    break;
-                                }
-                            }
-                            System.out.println(str);
-                            //todo: use received data do sth
-                            break;
-                        default:
-                            System.out.println("Unknown identifier!");
-                            break;
-                    }
+                //read msg length
+                int len = dis.readInt();
+                //read msg identifier
+                int specifier = dis.readInt();
+                switch (specifier) {
+                    //receive string from clint
+                    case stringIdentifier:
+                        String str = dis.readUTF();
+                        System.out.println(str);
+                        //todo: use received data do sth
+                        break;
+                    default:
+                        System.out.println("Unknown identifier!");
+                        break;
                 }
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -126,13 +118,16 @@ public class FileTransferServer extends ServerSocket{
             }
         }
 
-        private String getInputStr() {
+        private String getInputStr() throws IOException {
             System.out.println("Please input the msg to send: ");
             Scanner in = new Scanner(System.in);
             String str = in.nextLine();
             if (!str.equals("exit")) {
                 return str;
             }
+            dis.close();
+            dos.close();
+            socket.close();
             System.exit(0);
             return "";
         }

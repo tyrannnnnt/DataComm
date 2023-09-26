@@ -26,8 +26,11 @@ public class FileTransferClient extends Socket {
         System.out.println("Client[port:" + client.getLocalPort() + "] connect to server successful!");
     }
 
-    public void quitSys(){
+    public void quitSys() throws IOException {
         this.exit = true;
+        dis.close();
+        dos.close();
+        this.close();
     }
 
     /**
@@ -39,19 +42,15 @@ public class FileTransferClient extends Socket {
             dis = new DataInputStream(this.getInputStream());
             //read msg length
             int len = dis.readInt();
+            System.out.println("len"+len);
             //read msg identifier
             int specifier = dis.readInt();
+            System.out.println("sep" + specifier);
             switch (specifier){
                 //receive msg from server
                 case stringIdentifier:
-                    String str = "";
-                    String temp;
-                    while (!(temp = dis.readUTF()).equalsIgnoreCase("")) {
-                        str += temp;
-                        if (temp.isEmpty()) {
-                            break;
-                        }
-                    }
+                    String str = dis.readUTF();
+//                    String temp = dis.readUTF();
                     System.out.println(str);
                     //todo: use received data do sth
                     break;
@@ -70,6 +69,7 @@ public class FileTransferClient extends Socket {
      */
     public void sendStr(String str){
         try {
+            dos = new DataOutputStream(this.getOutputStream());
             dos.writeInt(str.length());
             dos.writeInt(stringIdentifier);
             dos.writeUTF(str);
